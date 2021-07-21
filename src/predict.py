@@ -4,12 +4,12 @@ import csv
 
 def get_thetas():
     try:
-        with open("thetas.csv", 'r') as csv_file:
+        with open("data/thetas.csv", 'r') as csv_file:
             dict_val = csv.reader(csv_file, delimiter=",")
             return next(dict_val)
     except FileNotFoundError:
         print('Model not trained yet, thetas will be set to 0.')
-        print('Consider running `python train.py` to train the model before predicting.\n')
+        print('Consider running `python src/train.py` to train the model before predicting.\n')
         return [0, 0]
 
 
