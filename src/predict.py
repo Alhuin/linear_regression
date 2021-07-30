@@ -1,6 +1,8 @@
 import sys
 import csv
 
+from models import DataSet
+
 
 def get_thetas():
     try:
@@ -25,9 +27,11 @@ def get_user_input():
 
 
 def main():
-    [theta0, theta1] = get_thetas()
-    mileage = get_user_input()
-    prediction = float(theta0) + float(theta1) * mileage
+    dataset = DataSet('data/data.csv')
+    [theta0, theta1, scaling] = get_thetas()
+
+    mileage = dataset.scale(get_user_input(), scaling)
+    prediction = float(theta1) + float(theta0) * mileage
     print(f'The approximated price of your car is {prediction} dollars.')
 
 
