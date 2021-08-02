@@ -3,6 +3,12 @@ from models import LinearRegression
 
 
 def parse():
+    """
+        Parse flags and arguments from sys.argv
+        :return:
+            str: scaling_method:    the scaling method used to train the dataset ( normalize or standardize )
+            boolean: visualize:     if plotting is needed
+    """
     scaling_method = 'standardize'
     visualize = False
     i = 1
@@ -32,6 +38,17 @@ def parse():
 
 
 def export_globals(regressor):
+    """
+        Write the global variables to a csv file to be imported in predict.py
+            globals:
+                - theta0
+                - theta1
+                - scaling_method
+                - scaling_param1
+                - scaling_param2
+        :param: regressor: the trained LinearRegression object
+        :return: None
+    """
     f = open("data/thetas.csv", "w+")
     f.write("%f,%f,%s,%f,%f" % (
         regressor.theta[0],
@@ -50,15 +67,24 @@ def main():
         'normalize': {'lr': 0.1, 'iters': 1000}
     }
 
+    # Parse flags and arguments
     scaling_method, visualize = parse()
+
+    # Init regressor
     regressor = LinearRegression(
         path='data/data.csv',
         learning_rate=best_fits[scaling_method]['lr'],
         n_iterations=best_fits[scaling_method]['iters'],
         scaling_method=scaling_method
     )
+
+    # Train model
     regressor.fit()
+
+    # Export globals to import in predict.py
     export_globals(regressor)
+
+    # Plot graphs
     if visualize:
         regressor.visualize()
 

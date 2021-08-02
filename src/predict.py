@@ -3,6 +3,11 @@ import csv
 
 
 def import_globals():
+    """
+        Import the global variables from the csv file created in predict.py
+        :return:
+            [theta0, theta1, scaling_method, scaling_param1, scaling_param2]
+    """
     try:
         with open("data/thetas.csv", 'r') as csv_file:
             dict_val = csv.reader(csv_file, delimiter=",")
@@ -14,6 +19,10 @@ def import_globals():
 
 
 def get_user_input():
+    """
+        Prompt user for a mileage
+        :return: int: mileage
+    """
     mileage = None
     while mileage is None:
         try:
@@ -25,6 +34,16 @@ def get_user_input():
 
 
 def scale(to_scale, method, param_1, param_2):
+    """
+        Scale a number with the parameters given used by the regressor
+
+        :param to_scale:    the number to be scaled
+        :param method:      the scaling method (standardize or normalize)
+        :param param_1:     the first scaling parameter (mean(x) for standardization, min(x) for normalization)
+        :param param_2:     the second scaling parameter (std(x) for standardization, max(x) for normalization)
+
+        :return: the scaled variable
+    """
     if method == 'normalize':
         x_min, x_max = \
             float(param_1), float(param_2)
@@ -35,9 +54,14 @@ def scale(to_scale, method, param_1, param_2):
 
 
 def main():
+
+    # import globals from the csv
     [theta0, theta1, scaling_method, scaling_param_1, scaling_param_2] = import_globals()
 
+    # get user input and scale the value using the regressor parameters
     mileage = scale(get_user_input(), scaling_method, scaling_param_1, scaling_param_2)
+
+    # predict with the regressor thetas (y = ax + b) and print the results
     prediction = float(theta1) + float(theta0) * mileage
     print(f'The approximated price of your car is {prediction} dollars.')
 
