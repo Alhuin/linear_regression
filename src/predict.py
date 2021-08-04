@@ -62,7 +62,7 @@ def main():
     mileage = scale(get_user_input(), scaling_method, scaling_param_1, scaling_param_2)
 
     # predict with the regressor thetas (y = ax + b) and print the results
-    prediction = float(theta1) + float(theta0) * mileage
+    prediction = float(theta0) + float(theta1) * mileage
     print(f'The approximated price of your car is {prediction} dollars.')
 
 

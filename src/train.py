@@ -51,8 +51,8 @@ def export_globals(regressor):
     """
     f = open("data/thetas.csv", "w+")
     f.write("%f,%f,%s,%f,%f" % (
-        regressor.theta[0],
         regressor.theta[1],
+        regressor.theta[0],
         regressor.scaling_method,
         regressor.x_min if regressor.scaling_method == 'normalize' else regressor.x_mean,
         regressor.x_max if regressor.scaling_method == 'normalize' else regressor.x_std
@@ -87,6 +87,7 @@ def main():
     # Plot graphs
     if visualize:
         regressor.visualize()
+        regressor.plot_gradient_descent()
 
 
 if __name__ == "__main__":
