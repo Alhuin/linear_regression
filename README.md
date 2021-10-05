@@ -11,6 +11,6 @@ Usage
 
 - train model and get prediction
 
-    ``python src/train.py``
+    ``python src/train.py [-v to visualize]``
 
     ``python src/predict.py``
