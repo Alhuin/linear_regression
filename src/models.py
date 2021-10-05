@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib.animation import FuncAnimation
 from matplotlib.widgets import Slider
 
 
@@ -136,13 +137,25 @@ class LinearRegression:
         step = Slider(ax_slide, 'step', 0, self.n_iters - 1, valinit=0, valstep=self.n_iters // 100)
 
         def update_from_step(val):
+            fig.suptitle(f' step {val}')
             line.set_ydata(self.hypothesis(self.theta_history[val]))
             current_cost.set_data(val, self.cost_history[val])
             fig.canvas.draw()
 
+        def animate(i):
+            step.set_val(i)
+
+        animation = FuncAnimation(
+            fig,
+            animate,
+            frames=len(self.theta_history),
+            interval=5000 / self.n_iters,
+            repeat=False
+        )
+
         step.on_changed(update_from_step)
-        wm = plt.get_current_fig_manager()
-        wm.window.state('zoomed')
+        man = plt.get_current_fig_manager()
+        man.full_screen_toggle()
         plt.show()
 
     def plot_gradient_descent(self):
@@ -157,7 +170,7 @@ class LinearRegression:
         ax.set_ylabel('theta1')
         ax.set_zlabel('cost')
         fig.legend()
-        wm = plt.get_current_fig_manager()
-        wm.window.state('zoomed')
+        man = plt.get_current_fig_manager()
+        man.full_screen_toggle()
         plt.show()
 
