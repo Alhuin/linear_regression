@@ -18,7 +18,11 @@ setup: requirements.txt
 	$(PIP) install -r requirements.txt
 
 train: setup
+ifeq ($(PLOT), False)
 	$(PYTHON) src/train.py
+else
+	$(PYTHON) src/train.py -v
+endif
 
 predict: setup
 	$(PYTHON) src/predict.py

@@ -1,5 +1,5 @@
 import sys
-from models import LinearRegression
+from models import LinearRegression, Visualizer
 
 
 def parse():
@@ -86,8 +86,9 @@ def main():
 
     # Plot graphs
     if visualize:
-        regressor.visualize()
-        regressor.plot_gradient_descent()
+        visualizer = Visualizer(regressor)
+        visualizer.plot_cost_history()
+        visualizer.plot_gradient_descent()
 
 
 if __name__ == "__main__":

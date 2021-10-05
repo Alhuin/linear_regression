@@ -108,17 +108,22 @@ class LinearRegression:
         v = ((self.y - self.y.mean()) ** 2).sum()
         return 1 - u / v
 
-    def visualize(self):
+
+class Visualizer:
+    def __init__(self, regressor):
+        self.regressor = regressor
+
+    def plot_cost_history(self):
         fig = plt.figure(figsize=plt.figaspect(2.))
         prediction = fig.add_subplot(211)
         plt.subplots_adjust(left=0.15, bottom=0.1, right=0.8, top=0.8, wspace=0.4, hspace=0.8)
 
         # plot prediction line
         prediction.set_title('Prediction')
-        prediction.scatter(self.scaled_x, self.y, label="Training data")
-        line, = prediction.plot(self.scaled_x, self.hypothesis(self.theta_history[0]), c='red',
+        prediction.scatter(self.regressor.scaled_x, self.regressor.y, label="Training data")
+        line, = prediction.plot(self.regressor.scaled_x, self.regressor.hypothesis(self.regressor.theta_history[0]), c='red',
                                 label="Current prediction")
-        prediction.set_xlabel(f'Mileage in km ( {self.scaling_method}d )')
+        prediction.set_xlabel(f'Mileage in km ( {self.regressor.scaling_method}d )')
         prediction.set_ylabel('Price in dollars')
         prediction.set_ylim(0, 10000)
         prediction.legend()
@@ -126,20 +131,20 @@ class LinearRegression:
         # plot cost history
         cost = fig.add_subplot(212)
         cost.set_title("Cost history")
-        current_cost, = cost.plot([0], self.cost_history[0], 'ro', label="Current cost")
-        cost.plot(range(self.n_iters), self.cost_history, label="Cost over iterations")
+        current_cost, = cost.plot([0], self.regressor.cost_history[0], 'ro', label="Current cost")
+        cost.plot(range(self.regressor.n_iters), self.regressor.cost_history, label="Cost over iterations")
         cost.legend()
         cost.set_xlabel('iterations')
         cost.set_ylabel('cost')
 
         # set slider to navigate threw steps
         ax_slide = plt.axes([0.15, 0.9, 0.65, 0.03])
-        step = Slider(ax_slide, 'step', 0, self.n_iters - 1, valinit=0, valstep=self.n_iters // 100)
+        step = Slider(ax_slide, 'step', 0, self.regressor.n_iters - 1, valinit=0, valstep=self.regressor.n_iters // 100)
 
         def update_from_step(val):
             fig.suptitle(f' step {val}')
-            line.set_ydata(self.hypothesis(self.theta_history[val]))
-            current_cost.set_data(val, self.cost_history[val])
+            line.set_ydata(self.regressor.hypothesis(self.regressor.theta_history[val]))
+            current_cost.set_data(val, self.regressor.cost_history[val])
             fig.canvas.draw()
 
         def animate(i):
@@ -148,8 +153,8 @@ class LinearRegression:
         animation = FuncAnimation(
             fig,
             animate,
-            frames=len(self.theta_history),
-            interval=5000 / self.n_iters,
+            frames=len(self.regressor.theta_history),
+            interval=5000 / self.regressor.n_iters,
             repeat=False
         )
 
@@ -159,13 +164,13 @@ class LinearRegression:
         plt.show()
 
     def plot_gradient_descent(self):
-        theta0 = [theta[1][0] for theta in self.theta_history]
-        theta1 = [theta[0][0] for theta in self.theta_history]
+        theta0 = [theta[1][0] for theta in self.regressor.theta_history]
+        theta1 = [theta[0][0] for theta in self.regressor.theta_history]
         fig = plt.figure()
         fig.suptitle('Gradient descent')
         ax = fig.add_subplot(projection='3d')
-        ax.scatter(theta0, theta1, self.cost_history, 'blue', label='steps')
-        ax.plot3D(theta0, theta1, self.cost_history, 'red', label='gradient descent')
+        ax.scatter(theta0, theta1, self.regressor.cost_history, 'blue', label='steps')
+        ax.plot3D(theta0, theta1, self.regressor.cost_history, 'red', label='gradient descent')
         ax.set_xlabel('theta0')
         ax.set_ylabel('theta1')
         ax.set_zlabel('cost')
@@ -173,4 +178,3 @@ class LinearRegression:
         man = plt.get_current_fig_manager()
         man.full_screen_toggle()
         plt.show()
-
