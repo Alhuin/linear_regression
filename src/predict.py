@@ -59,7 +59,9 @@ def main():
     [theta0, theta1, scaling_method, scaling_param_1, scaling_param_2] = import_globals()
 
     # get user input and scale the value using the regressor parameters
-    mileage = scale(get_user_input(), scaling_method, scaling_param_1, scaling_param_2)
+    mileage = get_user_input()
+    if scaling_method is not None:
+        mileage = scale(mileage, scaling_method, scaling_param_1, scaling_param_2)
 
     # predict with the regressor thetas (y = ax + b) and print the results
     prediction = float(theta0) + float(theta1) * mileage
