@@ -13,18 +13,18 @@ help:
 	@echo "To clean the project type make clean"
 	@echo "------------------------------------"
 
-setup: requirements.txt
+$(VENV)/bin/activate: requirements.txt
 	python3 -m venv $(VENV)
 	$(PIP) install -r requirements.txt
 
-train: setup
-ifeq ($(PLOT), False)
-	$(PYTHON) src/train.py
-else
+train: $(VENV)/bin/activate
+ifeq ($(PLOT),y)
 	$(PYTHON) src/train.py -v
+else
+	$(PYTHON) src/train.py
 endif
 
-predict: setup
+predict: $(VENV)/bin/activate
 	$(PYTHON) src/predict.py
 
 clean:
