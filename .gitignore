@@ -1,2 +1,9 @@
 /.idea/
 /venv/
+/data/thetas.csv
+.coverage
+.eggs/
+__pycache__/
+*.pyc
+*.pytest_cache
+linear_regression.egg-info/

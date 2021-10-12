@@ -14,7 +14,7 @@ def import_globals():
             return next(dict_val)
     except FileNotFoundError:
         print('Model not trained yet, thetas will be set to 0.')
-        print('Consider running `python src/train.py` to train the model before predicting.\n')
+        print('Consider running `python src/train.py` to train the model.\n')
         return [0, 0, None, None, None]
 
 
@@ -28,7 +28,7 @@ def get_user_input():
         try:
             mileage = int(input("Enter your car mileage in km: "))
         except ValueError:
-            print("This is not a number !")
+            print("This is not a number !", file=sys.stderr)
             continue
     return mileage
 
@@ -39,8 +39,8 @@ def scale(to_scale, method, param_1, param_2):
 
         :param to_scale:    the number to be scaled
         :param method:      the scaling method (standardize or normalize)
-        :param param_1:     the first scaling parameter (mean(x) for standardization, min(x) for normalization)
-        :param param_2:     the second scaling parameter (std(x) for standardization, max(x) for normalization)
+        :param param_1:     the first scaling parameter
+        :param param_2:     the second scaling parameter
 
         :return: the scaled variable
     """
@@ -54,18 +54,27 @@ def scale(to_scale, method, param_1, param_2):
 
 
 def main():
-
     # import globals from the csv
-    [theta0, theta1, scaling_method, scaling_param_1, scaling_param_2] = import_globals()
+    [
+        theta0,
+        theta1,
+        scaling_method,
+        scaling_param_1,
+        scaling_param_2
+    ] = import_globals()
 
     # get user input and scale the value using the regressor parameters
     mileage = get_user_input()
+    print(mileage)
     if scaling_method is not None:
-        mileage = scale(mileage, scaling_method, scaling_param_1, scaling_param_2)
+        mileage = scale(mileage, scaling_method,
+                        scaling_param_1, scaling_param_2)
 
     # predict with the regressor thetas (y = ax + b) and print the results
     prediction = float(theta0) + float(theta1) * mileage
-    print(f'The approximated price of your car is {prediction} dollars.')
+    print(f'The approximated price of your car is '
+          f'{round(prediction, 2)} dollars.'
+          )
 
 
 if __name__ == '__main__':
