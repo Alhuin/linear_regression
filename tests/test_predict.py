@@ -68,7 +68,6 @@ def test_main_no_thetas(monkeypatch, capfd):
     main()
     out, err = capfd.readouterr()
     guess = out.split('\n')[-2]
-    print(guess)
     assert guess == 'The approximated price of your car is 0.0 dollars.'
 
 
@@ -82,6 +81,6 @@ def test_main_w_thetas(monkeypatch, capfd):
     main()
     out, err = capfd.readouterr()
     assert out == (
-            '3000\nThe approximated price'
+            'The approximated price'
             ' of your car is 5000.67 dollars.\n'
     )

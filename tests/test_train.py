@@ -37,18 +37,21 @@ def test_parser_print_help_and_exit(capfd):
         parse(['-h'])
     out, err = capfd.readouterr()
     assert out == (
-        "usage: src/train.py [-h] [-lr LEARNING_RATE] "
-        "[-i ITERATIONS] [-m MOMENTUM]\n"
-        "                    [-g] [-s SCALE] [-v]\n\n"
+        "usage: train.py [-h] [-lr LEARNING_RATE] "
+        "[-m MOMENTUM] [-t TOLERANCE] [-g]\n"
+        "                [-s SCALE] [-v]\n\n"
         "Linear regression trainer.\n\n"
         "optional arguments:\n"
         "  -h, --help            show this help message and exit\n"
         "  -lr LEARNING_RATE, --learning-rate LEARNING_RATE\n"
-        "                        manually set the learning rate\n"
-        "  -i ITERATIONS, --iterations ITERATIONS\n"
-        "                        manually set the number of iterations\n"
+        "                        manually set the learning rate"
+        " (between 0 and 1)\n"
         "  -m MOMENTUM, --momentum MOMENTUM\n"
-        "                        manually set momentum value\n"
+        "                        manually set momentum value"
+        " (between 0 and 1)\n"
+        "  -t TOLERANCE, --tolerance TOLERANCE\n"
+        "                        tolerance in error reduction"
+        " for the stop condition.\n"
         "  -g, --grid-search     perform a grid search "
         "to find best lr and momentum\n"
         "                        (will override both)\n"
@@ -65,10 +68,10 @@ def test_parser_unrecognized_aguments(capfd):
         parse(['-q'])
     out, err = capfd.readouterr()
     assert err == (
-        "usage: src/train.py [-h] [-lr LEARNING_RATE] "
-        "[-i ITERATIONS] [-m MOMENTUM]\n"
-        "                    [-g] [-s SCALE] [-v]\n"
-        "src/train.py: error: unrecognized arguments: -q\n"
+        "usage: train.py [-h] [-lr LEARNING_RATE] "
+        "[-m MOMENTUM] [-t TOLERANCE] [-g]\n"
+        "                [-s SCALE] [-v]\n"
+        "train.py: error: unrecognized arguments: -q\n"
     )
 
 
@@ -82,7 +85,6 @@ def test_export_globals_standardize():
     regressor = LinearRegression(
         dataset,
         learning_rate=0.01,
-        n_iters=100,
     )
     export_globals(regressor, dataset)
     with open(thetas, 'r') as csv_file:
@@ -106,7 +108,6 @@ def test_export_globals_normalize():
     regressor = LinearRegression(
         dataset,
         learning_rate=0.01,
-        n_iters=100,
     )
     export_globals(regressor, dataset)
     with open(thetas, 'r') as csv_file:
@@ -124,20 +125,20 @@ def test_grid_search_on_normalized_data():
     dataset = DataSet()
     dataset.load_csv('data/data.csv')
     dataset.scale_dataset('normalize')
-    lr, momentum, min_err = grid_search(dataset, [0, 1], [0, 1])
-    assert lr == 0.6000000000000001
-    assert momentum == 0.7000000000000001
-    assert min_err == 222822.62253563665
+    lr, momentum, i = grid_search(dataset, [0, 1], [0, 1])
+    assert lr == 0.8
+    assert momentum == 0.8
+    assert i == 157
 
 
 def test_grid_search_on_standardized_data():
     dataset = DataSet()
     dataset.load_csv('data/data.csv')
     dataset.scale_dataset('standardize')
-    lr, momentum, min_err = grid_search(dataset, [0, 1], [0, 1])
-    assert lr == 0.1
-    assert momentum == 0.4
-    assert min_err == 222822.62253563665
+    lr, momentum, i = grid_search(dataset, [0, 1], [0, 1])
+    assert lr == 0.9
+    assert momentum == 0.0
+    assert i == 9
 
 
 def test_main_no_args():

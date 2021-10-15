@@ -58,9 +58,16 @@ class DataSet:
             :param csv_path:    the path containing the dataset as csv
         """
         try:
-            self.data = np.loadtxt(open(csv_path), delimiter=",", skiprows=1)
+            self.data = np.loadtxt(
+                open(csv_path),
+                delimiter=",",
+                skiprows=1
+            )
         except FileNotFoundError:
             print("Wrong file or file path", file=sys.stderr)
+            exit(0)
+        except ValueError:
+            print("Invalid data format", file=sys.stderr)
             exit(0)
 
         x = self.data[:, 0]
@@ -71,12 +78,19 @@ class DataSet:
 
 
 class LinearRegression:
-    def __init__(self, dataset, learning_rate=0.1, n_iters=200, momentum=0):
+    def __init__(
+            self,
+            dataset,
+            learning_rate=0.1,
+            momentum=0,
+            tolerance=0.00000001
+    ):
+        self.err_tolerance = tolerance
         self.dataset = dataset
         self.theta = np.zeros((2, 1))
         self.momentum = momentum
+        self.iterations = 0
         self.lr = learning_rate
-        self.n_iters = n_iters
         self.theta_history = []
         self.cost_history = []
         self.x_oned = np.hstack((
@@ -136,7 +150,8 @@ class LinearRegression:
         self.theta_history.append(self.theta.copy())
         self.cost_history.append(self.cost_function())
         change = 0
-        for _ in range(0, self.n_iters):
+        i = 0
+        while True:
             # update thetas and apply momentum
             new_change = self.lr * self.gradient() + self.momentum * change
             self.theta -= new_change
@@ -144,6 +159,11 @@ class LinearRegression:
             # log
             self.theta_history.append(self.theta.copy())
             self.cost_history.append(self.cost_function())
+            if i > 1 and abs(self.cost_history[-2] - self.cost_history[-1]) \
+                    <= self.err_tolerance:
+                self.iterations = i + 1
+                break
+            i += 1
 
     def coef_determination(self):
         """
@@ -220,7 +240,7 @@ class Visualizer:
             ax_slide,
             'step',
             0,
-            self.regressor.n_iters - 1,
+            self.regressor.iterations,
             valinit=0,
             valstep=1
         )

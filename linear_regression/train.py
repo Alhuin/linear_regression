@@ -14,14 +14,14 @@ def main(args=None):
         # get arguments from parser
         args = parse(sys.argv[1:])
         lr = args.learning_rate
-        iterations = args.iterations
         momentum = args.momentum
         g_search = args.grid_search
         visualize = args.visualize
         scaling_method = args.scale
+        tolerance = args.tolerance
     else:
         # get arguments from call (testing purpose)
-        [scaling_method, visualize, lr, momentum, g_search, iterations] = args
+        [scaling_method, visualize, lr, momentum, g_search, tolerance] = args
 
     # Create, load and scale dataset
     dataset = DataSet()
@@ -34,17 +34,18 @@ def main(args=None):
             'Grid Search enabled, '
             'learning_rate and momentum values will be overwritten'
         )
-        lr, momentum, min_err = grid_search(dataset, [0, 1], [0, 1])
-        print(f'optimized parameters lr: {lr}, momentum: {momentum}')
+        lr, momentum, iterations = grid_search(dataset, [0, 1], [0, 1])
 
+    print(f'parameters lr: {lr}, momentum: {momentum}, tolerance: {tolerance}')
     # Train the model with the best parameters
     regressor = LinearRegression(
         dataset=dataset,
         learning_rate=lr,
-        n_iters=iterations,
         momentum=momentum,
+        tolerance=tolerance
     )
     regressor.fit()
+    print(f'Found fit under tolerance at turn {regressor.iterations}')
 
     # Export globals to import in predict.py
     export_globals(regressor, dataset)
@@ -60,7 +61,7 @@ def main(args=None):
         visualizer.plot_gradient_descent()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":                          # pragma: no cover
     try:
         main()
     except KeyboardInterrupt:

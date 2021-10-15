@@ -19,9 +19,9 @@ help:
 	@echo "		clean build files."
 	@echo "	make predict"
 	@echo "		run a prediction with current thetas."
-	@echo "	make train [FLAGS]"
-	@echo "		- FLAGS='train.py flags (see make train FLAGS='-h')'"
-	@echo "		- eg: make train FLAGS='-v -lr 0.001 -i 1000 -m=0.5 -s normalize'"
+	@echo "	make train -- [options]"
+	@echo "		- options: train.py options (see make train -- -h)"
+	@echo "		- eg: make train -- -v -lr 0.001 -i 1000 -m=0.5 -s normalize"
 	@echo "		train the model."
 
 $(VENV): setup.py
@@ -56,4 +56,7 @@ predict: $(VENV)
 	$(BIN)/python linear_regression/predict.py
 
 train: $(VENV)
-	$(BIN)/python linear_regression/train.py $(FLAGS)
+	$(BIN)/python linear_regression/train.py $(filter-out $@,$(MAKECMDGOALS))
+
+%:
+	@:
