@@ -45,7 +45,7 @@ class DataSet:
             self.x_min = self.original_x.min()
             self.x_max = self.original_x.max()
             return (to_scale - self.x_min) / (self.x_max - self.x_min)
-        elif method == 'standardize':
+        if method == 'standardize':
             self.x_mean = self.original_x.mean()
             self.x_std = self.original_x.std()
             return (to_scale - self.x_mean) / self.x_std
