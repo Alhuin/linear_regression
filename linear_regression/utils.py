@@ -197,8 +197,8 @@ def scale(to_scale, method, param_1, param_2):
     """
     if method == 'normalize':
         x_min, x_max = \
-            float(param_1), float(param_2)
+                float(param_1), float(param_2)
         return (to_scale - x_min) / (x_max - x_min)
-    elif method == 'standardize':
+    if method == 'standardize':
         x_mean, x_std = float(param_1), float(param_2)
         return (to_scale - x_mean) / x_std
