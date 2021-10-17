@@ -65,10 +65,10 @@ class DataSet:
             )
         except FileNotFoundError:
             print("Wrong file or file path", file=sys.stderr)
-            exit(0)
+            sys.exit(0)
         except ValueError:
             print("Invalid data format", file=sys.stderr)
-            exit(0)
+            sys.exit(0)
 
         x = self.data[:, 0]
         y = self.data[:, 1]
